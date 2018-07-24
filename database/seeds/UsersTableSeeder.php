@@ -45,7 +45,7 @@ class UsersTableSeeder extends Seeder
         $user->save();
 
 
-        
+
         // 初始化用户角色，将 1 号用户指派为『站长』
         $user->assignRole('Founder');
 
