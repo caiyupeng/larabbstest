@@ -12,6 +12,8 @@ use App\Models\Category;
 use Auth;
 use App\Models\User;
 
+use App\Models\Link;
+
 use App\Handlers\ImageUploadHandler;
 
 class TopicsController extends Controller
@@ -21,7 +23,7 @@ class TopicsController extends Controller
         $this->middleware('auth', ['except' => ['index', 'show']]);
     }
 
-    public function index(Request $request, Topic $topic, User $user)
+    public function index(Request $request, Topic $topic, User $user, Link $link)
 	{
 	    //采用预加载
 //        方法 with() 提前加载了我们后面需要用到的关联属性 user 和 category，并做了缓存。
@@ -29,8 +31,9 @@ class TopicsController extends Controller
 
         $topics = $topic->withOrder($request->order)->paginate(20);
         $active_users = $user->getActiveUsers();
+        $links = $link->getAllCached();
 //        dd($active_users);
-        return view('topics.index', compact('topics', 'active_users'));
+        return view('topics.index', compact('topics', 'active_users', 'links'));
 	}
 
     public function show(Request $request, Topic $topic)
