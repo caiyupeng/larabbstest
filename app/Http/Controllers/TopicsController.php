@@ -10,6 +10,7 @@ use App\Http\Requests\TopicRequest;
 use App\Models\Category;
 
 use Auth;
+use App\Models\User;
 
 use App\Handlers\ImageUploadHandler;
 
@@ -20,14 +21,16 @@ class TopicsController extends Controller
         $this->middleware('auth', ['except' => ['index', 'show']]);
     }
 
-	public function index(Request $request, Topic $topic)
+    public function index(Request $request, Topic $topic, User $user)
 	{
 	    //采用预加载
 //        方法 with() 提前加载了我们后面需要用到的关联属性 user 和 category，并做了缓存。
 //        后面即使是在遍历数据时使用到这两个关联属性，数据已经被预加载并缓存
 
         $topics = $topic->withOrder($request->order)->paginate(20);
-        return view('topics.index', compact('topics'));
+        $active_users = $user->getActiveUsers();
+//        dd($active_users);
+        return view('topics.index', compact('topics', 'active_users'));
 	}
 
     public function show(Request $request, Topic $topic)
